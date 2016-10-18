@@ -324,4 +324,17 @@ class GUI(Widget):
         self.add_widget(self.ship)
         Clock.schedule_interval((self.ship.drawArrow), 0.1)
 
-    
+    def addAsteroid(self):
+        imageNumber = randint(1, 4)
+        imageStr = './sandstone_' + str(imageNumber) +'.png'
+        tmpAsteroid = Asteroid(imageStr)
+        tmpAsteroid.x = Window.width * 0.99
+
+        ypos = randint(1, 16)
+        ypos = ypos * Window.height * .0625
+        tmpAsteroid.y = ypos
+        tmpAsteroid.velocity_y = 0
+        vel = 55
+        tmpAsteroid.velocity_x = 0.1 * vel
+        self.asteroidList.append(tmpAsteroid)
+        self.add_widget(tmpAsteroid)
