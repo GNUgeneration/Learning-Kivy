@@ -254,3 +254,48 @@ class Ship(WidgetDrawer):
             
         self.velocity_y = self.impulse + self.grav
         self.impulse = 0.95 * self.impulse
+
+        def drawArrow(self, *largs):
+        with self.canvas:
+            flamePos = (self.pos[0] - Window.width * .02, 
+                        self.pos[1] + Window.width * .01)
+            flameRect = Rectangle(source = './flame.png',
+                                  pos = flamePos,
+                                  size = self.flameSize)
+            def removeArrows(arrow, *largs):
+                self.canvas.remove(arrow)
+            Clock.schedule_once(partial(removeArrows,flameRect),.5)
+            Clock.schedule_once(partial(self.updateArrows, flameRect),0.1)
+            
+    def updateArrows(self, arrow, dt):
+        with self.canvas:
+            arrow.pos = (arrow.pos[0] - 10, arrow.pos [1])
+            
+            Clock.schedule_once(partial(self.updateArrows, arrow),0.1)
+        return
+    
+    def explode(self):
+        tmpSize = Window.width * 0.25, Window.width*0.2
+        tmpPos = (self.x - Window.width * 0.095,
+                  self.y - Window.width*0.008)
+        with self.canvas:
+            self.explosionRect = Rectangle(source = './explosion1.png',
+                                           pos = tmpPos, size = tmpSize)
+        def changeExplosion(rect, newSource, *largs):
+            rect.source = newSource
+            
+        Clock.schedule_once(partial(changeExplosion, self.explosionRect,
+                                    './explosion2.png'), 0.2)
+        Clock.schedule_once(partial(changeExplosion, self.explosionRect,
+                                    './explosion3.png'), 0.4)
+        Clock.schedule_once(partial(changeExplosion, self.explosionRect,
+                                    './explosion4.png'), 0.6)
+        Clock.schedule_once(partial(changeExplosion, self.explosionRect,
+                                    './explosion5.png'), 0.8)
+        def removeExplosion(rect, *largs):
+            self.canvas.remove(rect)
+        Clock.schedule_once(partial(removeExplosion, self.explosionRect),1)
+        
+    def update(self):
+        self.determineVelocity()
+        self.move()
