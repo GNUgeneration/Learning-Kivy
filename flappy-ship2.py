@@ -14,7 +14,7 @@ from kivy.properties import ObjectProperty
 from kivy.clock import Clock
 
 from kivy.graphics import Rectangle, Color, Canvas
-from funtools import partial
+from functools import partial
 from random import *
 
 #setup graphics
@@ -30,7 +30,7 @@ class MyButton(Button):
 #class used to get inuform button styles
     def __init__(self, **kwargs):
         super(MyButton, self).__init__(**kwargs)
-        self.font size = Window.width * 0.018
+        self.font_size = Window.width * 0.018
 
 class SmartMenu(Widget):
 #the instance created by this class will appear
@@ -147,51 +147,51 @@ class ScoreWidget(Widget):
     def updateScore(self, dt):
         self.currentScore = self.currentScore + 100
         self.scoreLabel.text = 'Score: ' + str(self.currentScore)
-        if self.currentScore &lt; self.finalScore:
+        if self.currentScore < self.finalScore:
             Clock.schedule_once(self.updateScore, 0.1)
 
     def drawStars(self):
         starNumber = 0
-        if self.asteroidScore &gt; 10:
+        if self.asteroidScore > 10:
             starNumber = 1
-        if self.asteroidScore &gt; 50:
+        if self.asteroidScore > 50:
             starNumber = 2
-        if self.asteroidScore &gt; 200:
+        if self.asteroidScore > 200:
             starNumber = 3
-        if self.asteroidScore &gt; 500:
+        if self.asteroidScore > 500:
             starNumber = 4
-        if self.asteroidScore &gt; 1000:
+        if self.asteroidScore > 1000:
             starNumber = 5
 
             with self.canvas:
                 starPos = Window.width*0.27, Window.height*0.42
                 starSize = Window.width*0.06, Window.width*0.06
                 starString = 'gold_star.png'
-                if starNumber &lt; 1:
+                if starNumber < 1:
                     starString = 'gray_star.png'
                 starRectOne=Rectangle(source=starString,
                                       pos=starPos, size=starSize)
                 #rect 2
                 starPos = Window.width*0.37, Window.height*0.42
-                if starNumber &lt; 2:
+                if starNumber < 2:
                     starString = 'gray_star.png'
                 starRectTwo=Rectangle(source=starString,
                                       pos=starPos, size=starSize)
                 #rect 3
                 starPos = Window.width*0.47, Window.height*0.42
-                if starNumber &lt; 3:
+                if starNumber < 3:
                     starString = 'gray_star.png'
                 starRectThree=Rectangle(source=starString,
                                       pos=starPos, size=starSize)
                 #rect 4
                 starPos = Window.width*0.57, Window.height*0.42
-                if starNumber &lt; 4:
+                if starNumber < 4:
                     starString = 'gray_star.png'
                 starRectFour=Rectangle(source=starString,
                                       pos=starPos, size=starSize)
                 #rect 5
                 starPos = Window.width*0.67, Window.height*0.42
-                if starNumber &lt; 5:
+                if starNumber < 5:
                     starString = 'gray_star.png'
                 starRectTwo=Rectangle(source=starString,
                                       pos=starPos, size=starSize)
@@ -222,12 +222,12 @@ class Ship(WidgetDrawer):
         self.y = self.y + self.velocity_y
 
     #don't let the ship go to far
-        if self.y &lt; Window.height*0.05:
+        if self.y < Window.height*0.05:
             #give upwards impulse
             self.impulse = 1
             self.grav = -0.1
 
-        if self.y &gt; Window.height*0.95:
+        if self.y > Window.height*0.95:
             self.impulse = -3
 
     def checkBulletNPCCollision(self, j):
@@ -249,13 +249,12 @@ class Ship(WidgetDrawer):
                 
     def determineVelocity(self):
         self.grav = self.grav * 1.05
-        self.grav &lt; -4:
-            self.grav = -4
+        #self.grav < -4:
             
         self.velocity_y = self.impulse + self.grav
         self.impulse = 0.95 * self.impulse
-
-        def drawArrow(self, *largs):
+        
+    def drawArrow(self, *largs):
         with self.canvas:
             flamePos = (self.pos[0] - Window.width * .02, 
                         self.pos[1] + Window.width * .01)
@@ -300,7 +299,6 @@ class Ship(WidgetDrawer):
         self.determineVelocity()
         self.move()
 
-        
 class GUI(Widget):
     asteroidList = []
     asteroidScore = NumericProperty(0)
@@ -338,3 +336,27 @@ class GUI(Widget):
         tmpAsteroid.velocity_x = 0.1 * vel
         self.asteroidList.append(tmpAsteroid)
         self.add_widget(tmpAsteroid)
+
+    def drawTouchResponse(self, x, y):
+        with self.canvas:
+            tmpSize = Window.width * 0.07, Window.width * 0.07
+            tmpPos = (x - self.width/4, y - self.height/4)
+            self.arrowRect = Rectangle(source = './flame1.png', pos=tmpPos,
+                                       size = tmpSize)
+            def removeArrows(arrow, *largs):
+                self.canvas.remove(arrow)
+            def changeExplosion(rect, newSource, *largs):
+                rect.source = newSource
+
+            Clock.schedule_once(partial(changeExplosion, self.arrowRect,
+                                        './flame2.png'), 0.15)
+            Clock.schedule_once(partial(changeExplosion, self.arrowRect,
+                                        './flame3.png'), 0.3)
+            Clock.schedule_once(partial(changeExplosion, self.arrowRect,
+                                        './flame4.png'), 0.45)
+            Clock.schedule_once(partial(removeArrows, self.arrowRect), 0.6)
+
+        def on_touch_down(self, touch):
+            self.ship.impulse = 3
+            self.ship.grav = -0.1
+            self.drawTouchResponse(touch.x, touch.y)
