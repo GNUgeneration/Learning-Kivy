@@ -317,3 +317,11 @@ class GUI(Widget):
             self.score.text = str(self.asteroidScore)
         self.bind(asteroidScore = check_score)
         self.add_widget(self.score)
+
+        self.ship = Ship(imageStr = './ship.png')
+        self.ship.x = Window.width/4
+        self.ship.y = Window.height/2
+        self.add_widget(self.ship)
+        Clock.schedule_interval((self.ship.drawArrow), 0.1)
+
+    
