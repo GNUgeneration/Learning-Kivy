@@ -415,3 +415,35 @@ class GUI(Widget):
                 tmpAsteroidList = self.asteroidList
                 tmpAsteroidList[:] = [x for x in tmpAsteroidList if ((x.x > -100))]
                 self.asteroidList = tmpAsteroidList
+
+class ClientApp(App):
+
+    def build(self):
+        self.parent = Widget()
+
+        self.app = GUI()
+        #Clock.schedule_interval(app.update, 1.0/60.0)
+
+        self.sm = SmartStartMenu()
+        self.sm.buildUp()
+        def check_button(obj):
+            if self.sm.buttonText == 'start':
+                self.parent.remove_widget(self.sm)
+                print ' we should start the game now'
+                Clock.unschedule_interval(self.app.update, 1.0/60.0)
+                try:
+                    self.parent.remove_widget(self.aboutText)
+                except:
+                    pass
+            if self.sm.buttonText == 'about':
+                self.aboutText = Label(text = 'Flappy Ship is made by Molecular Flow Games /n Check out: https://kivyspacegame.wordpress.com')
+                self.aboutText.pos=(Window.width*0.45, Window.height*0.35)
+                self.parent.add_widget(self.aboutText)
+
+        self.sm.bind(on_button_release = check_button)
+        self.parent.add_widget(self.sm)
+        self.parent.add_widget(self.app)
+        return self.parent
+
+if __name__  == '__main__':
+    ClientApp().run()
