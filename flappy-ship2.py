@@ -360,3 +360,36 @@ class GUI(Widget):
             self.ship.impulse = 3
             self.ship.grav = -0.1
             self.drawTouchResponse(touch.x, touch.y)
+        def showScore(self):
+            self.scoreWidget = ScoreWidget()
+            self.scoreWidget.asteroidScore = self.asteroidScore
+            self.scoreWidget.prepare()
+            self.add_widget(self.scoreWidget)
+        def removeScore(self):
+            self.remove_widget(self.scoreWidget)
+
+        def gameOver(self):
+            restartButton = MyButton(text = 'Try Agian')
+            def restartButton(obj):
+                self.removeScore()
+
+                for k in self.asteroidList:
+                    self.remove_widget(k)
+                    self.ship.xpos = Window.width*0.25
+                    self.ship.ypos = Window.height*0.5
+                    self.minProb = 1780
+                    self.asteroidScore = 0
+                    self.asteroidList = []
+
+                self.parent.remove_widget(restartButton)
+                Clock.unschedule(self.update)
+                Clock.schedule_interval(self.update, 1.0/60.0)
+                restartButton.size = (Window.width*.3, Window.width*.1)
+                restartButton.pos=(Window.width*0.5-restartButton.width/2,
+                                   Window.height*0.53)
+                restartButton.bind(on_release = restart_button)
+
+                self.parent.add_widget(restartButton)
+                self.showScore()
+
+            
