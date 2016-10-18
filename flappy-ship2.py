@@ -299,3 +299,21 @@ class Ship(WidgetDrawer):
     def update(self):
         self.determineVelocity()
         self.move()
+
+        
+class GUI(Widget):
+    asteroidList = []
+    asteroidScore = NumericProperty(0)
+    minProb = 1780
+    def __init__(self, **kwargs):
+        super(GUI, self).__init__(**kwargs)
+
+
+        self.score = Label(text = '0')
+        self.score.y = Window.height * 0.8
+        self.score.x = Window.width * 0.2
+
+        def check_score(self, obj):
+            self.score.text = str(self.asteroidScore)
+        self.bind(asteroidScore = check_score)
+        self.add_widget(self.score)
