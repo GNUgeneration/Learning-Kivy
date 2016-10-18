@@ -392,4 +392,26 @@ class GUI(Widget):
                 self.parent.add_widget(restartButton)
                 self.showScore()
 
-            
+        def update(self, dt):
+            self.ship.update()
+            tmpCount = randint(1, 1800)
+            if tmpCount > self.minProb:
+                self.addAsteroid()
+                if self.minProb < 1300:
+                    self.minProb = 1300
+                self.minProb = self.minProb -1
+
+                for k in self.asteroidList:
+                    if k.collide_widget(self.ship):
+                        self.gameOver()
+                        Clock.unschedule(self.update)
+                        self.ship.explode()
+                        k.update()
+
+                if k.x < -100:
+                    self.remove_widget(k)
+                    self.asteroidScore = self.asteroidScore + 1
+
+                tmpAsteroidList = self.asteroidList
+                tmpAsteroidList[:] = [x for x in tmpAsteroidList if ((x.x > -100))]
+                self.asteroidList = tmpAsteroidList
