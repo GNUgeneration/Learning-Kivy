@@ -22,12 +22,74 @@ from kivy.config import Config
 Config.set('graphics', 'resizable', 0)
 
 #Graphics fix
+from kivy.core.window import Window
+Window.clearcolor = (0, 0, 0, 1.)
+#Window.clearcolor(1, 0, 0, 1.)
+
+class MyButton(Button):
+    def __init__(self, **kwargs):
+        super(MyButton, self).__init__(**kwargs)
+        self.font_size = Window.width*0.018
+
+class SmartMenu(Widget):
+    buttonList = []
+
+    def __init__(self, **kwargs):
+        self.register_event_type('on_button_release')
+
+        super(SmartMenu, self).__init__(**kwargs)
+        self.layout = BoxLayout(orientation = 'vertical')
+        self.layout.width = Window.width/2
+        self.layout.height = Window.height/2
+        self.layout.x = Window.width/2 - self.layout.width
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''import kivy
+kivy.require('1.7.2')
+
+from kivy.app import App
+from kivy.uix.widget import Widget
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.image import Image
+from kivy.core.window import Window
+from kivy.properties import NumericProperty
+from kivy.properties import ObjectProperty
+from kivy.clock import Clock
+
+from kivy.graphics import Rectangle, Color, Canvas
+from functools import partial
+from random import *
+
+#setup graphics
+from kivy.config import Config
+Config.set('graphics', 'resizable', 0)
+
+#Graphics fix
 from kivy.core.window import Window;
 Window.clearcolor = (0, 0, 0, 1.)
 #Window.clearcolor = (1, 0, 0, 1.)
 
 class MyButton(Button):
-#class used to get inuform button styles
+#class used to get uniform button styles
     def __init__(self, **kwargs):
         super(MyButton, self).__init__(**kwargs)
         self.font_size = Window.width * 0.018
@@ -447,4 +509,4 @@ class ClientApp(App):
         return self.parent
 
 if __name__  == '__main__':
-    ClientApp().run()
+    ClientApp().run()'''
