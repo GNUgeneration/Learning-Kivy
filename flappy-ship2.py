@@ -41,7 +41,7 @@ class SmartMenu(Widget):
         self.layout = BoxLayout(orientation = 'vertical')
         self.layout.width = Window.width/2
         self.layout.height = Window.height/2
-        self.layout.x = Window.width/2 - self.layout.width
+        self.layout.x = Window.width/2 - 
 
 
 
